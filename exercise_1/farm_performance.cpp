@@ -10,8 +10,8 @@
 #include <functional>
 #include <thread>
 
-#include "aux_src/myqueue.cpp"
-#include "aux_src/utimer.cpp"
+#include "../aux_src/myqueue.cpp"
+#include "../aux_src/utimer.cpp"
 #include "farm_of_pipelines.cpp"
 
 // -------------------------------------------------------------------------------------

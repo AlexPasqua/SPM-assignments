@@ -1,7 +1,7 @@
 #ifndef FARMOFPIPES
 #define FARMOFPIPES
 
-#include "aux_src/myqueue.cpp"
+#include "../aux_src/myqueue.cpp"
 
 using namespace std;
 using namespace std::chrono;

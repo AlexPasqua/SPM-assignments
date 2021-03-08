@@ -1,7 +1,7 @@
 #ifndef PIPELINE
 #define PIPELINE
 
-#include "aux_src/myqueue.cpp"
+#include "../aux_src/myqueue.cpp"
 
 using namespace std::chrono_literals;
 using namespace std::chrono;
