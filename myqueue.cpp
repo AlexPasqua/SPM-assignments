@@ -1,3 +1,6 @@
+#ifndef MYQUEUE
+#define MYQUEUE
+
 // The queue code itself. It is defined as a template such that we can defined queues with different item types
 template <typename T>
 class myqueue
@@ -27,3 +30,5 @@ public:
     return rc;
   }
 };
+
+#endif

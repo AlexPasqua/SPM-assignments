@@ -11,50 +11,7 @@
 #include <thread>
 
 #include "myqueue.cpp"
-
-// definition of end of stream
-#define EOS -1
-
-// Drain stage definition
-using namespace std::chrono_literals;
-void drain(myqueue<int> &q, std::chrono::milliseconds msecs) {
-  std::cout << "Drain started" << std::endl;
-  auto e = q.pop();
-  
-  while(e != EOS) {
-    std::this_thread::sleep_for(msecs);
-    std::cout << "received " << e << std::endl;
-    e = q.pop();
-  }
-    
-  return;
-}
-
-// Source stage definition
-void source(myqueue<int> &q, int n, std::chrono::milliseconds msecs) {
-    for(int i=0; i<n; i++){
-        std::this_thread::sleep_for(msecs);
-        q.push(i);
-        std::cout << "Drain emitted " << i << std::endl; 
-    }
-    q.push(EOS);
-    std::cout << "sent EOS" << std::endl;
-    return;
-}
-
-// Generic stage definition (computes int -> int function)
-void genericstage(myqueue<int> &inq, myqueue<int> &outq, std::chrono::milliseconds msecs) {
-  auto e = inq.pop();
-  
-  while(e != EOS) {
-    std::this_thread::sleep_for(msecs);
-    auto res = e+1;
-    outq.push(res);
-    e = inq.pop();
-  }
-  outq.push(EOS);
-  return;
-}
+#include "pipeline4stages.cpp"
 
 
 // -------------------------------------------------------------------------------------
@@ -108,27 +65,17 @@ auto completionTime(int m, std::chrono::milliseconds t0, std::chrono::millisecon
 using namespace std;
 int main(){
   // 4 stage pipeline
-  myqueue<int> q1, q2, q3;
   int taskNo = 10;
-  std::chrono::milliseconds msecs_src = 100ms;
-  std::chrono::milliseconds msecs_s1 = 200ms;
-  std::chrono::milliseconds msecs_s2 = 150ms;
-  std::chrono::milliseconds msecs_drn = 50ms;
-
+  std::chrono::milliseconds t0 = 100ms;
+  std::chrono::milliseconds t1 = 200ms;
+  std::chrono::milliseconds t2 = 150ms;
+  std::chrono::milliseconds t3 = 50ms;
   {
     utimer my_timer("my timer");
-    std::thread src(source, std::ref(q1), taskNo, msecs_src);
-    std::thread stg1(genericstage, std::ref(q1), std::ref(q2), msecs_s1);
-    std::thread stg2(genericstage, std::ref(q2), std::ref(q3), msecs_s2);
-    std::thread drn(drain, std::ref(q3), msecs_drn);
-    src.join();
-    stg1.join();
-    stg2.join();
-    drn.join();
+    pipeline4stages(taskNo, t0, t1, t2, t3);
   }
-  
   cout << "Theoretical time: " << \
-    completionTime(taskNo, msecs_src, msecs_s1, msecs_s2, msecs_drn).count() << " mesc\n";
+    completionTime(taskNo, t0, t1, t2, t3).count() << " mesc\n";
 
   return 0;
 }
