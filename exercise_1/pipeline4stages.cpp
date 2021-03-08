@@ -1,16 +1,13 @@
 #ifndef PIPELINE
 #define PIPELINE
 
-#include "myqueue.cpp"
-
-// definition of end of stream
-#define EOS -1
+#include "aux_src/myqueue.cpp"
 
 using namespace std::chrono_literals;
 using namespace std::chrono;
 
 // Drain stage definition
-void drain(myqueue<int> &q, std::chrono::milliseconds msecs) {
+void drain_pipeline(myqueue<int> &q, std::chrono::milliseconds msecs) {
   std::cout << "Drain started" << std::endl;
   auto e = q.pop();
   
@@ -24,7 +21,7 @@ void drain(myqueue<int> &q, std::chrono::milliseconds msecs) {
 }
 
 // Source stage definition
-void source(myqueue<int> &q, int n, std::chrono::milliseconds msecs) {
+void source_pipeline(myqueue<int> &q, int n, std::chrono::milliseconds msecs) {
     for(int i=0; i<n; i++){
         std::this_thread::sleep_for(msecs);
         q.push(i);
@@ -55,10 +52,10 @@ void pipeline4stages(int taskNo, milliseconds t0, milliseconds t1, milliseconds 
     myqueue<int> q1, q2, q3;
 
     // stages of the pipeline
-    std::thread s1(source, std::ref(q1), taskNo, t0);
+    std::thread s1(source_pipeline, std::ref(q1), taskNo, t0);
     std::thread s2(genericstage, std::ref(q1), std::ref(q2), t1);
     std::thread s3(genericstage, std::ref(q2), std::ref(q3), t2);
-    std::thread s4(drain, std::ref(q3), t3);
+    std::thread s4(drain_pipeline, std::ref(q3), t3);
 
     s1.join(); s2.join(); s3.join(); s4.join();
 }

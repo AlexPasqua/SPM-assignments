@@ -1,6 +1,9 @@
 #ifndef MYQUEUE
 #define MYQUEUE
 
+// definition of end of stream
+#define EOS -1
+
 // The queue code itself. It is defined as a template such that we can defined queues with different item types
 template <typename T>
 class myqueue
