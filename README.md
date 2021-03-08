@@ -1,2 +1,2 @@
-# SPM-exercises
-Exercises of the course "Parallel and Distributed Systems: Paradigms and Models" @ Unipi
+# SPM Exercises
+Exercises of the course _Parallel and Distributed Systems: Paradigms and Models_ @ Unipi
